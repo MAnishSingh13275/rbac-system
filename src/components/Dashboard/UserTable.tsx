@@ -18,6 +18,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, loading 
             <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
             <th className="px-6 py-3 text-left text-sm font-semibold">Role</th>
             <th className="px-6 py-3 text-left text-sm font-semibold">Permissions</th>
+            <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
             <th className="px-6 py-3"></th>
           </tr>
         </thead>
@@ -50,6 +51,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, loading 
                     ? user.permissions.map((permission) => permission.name).join(", ")
                     : "No permissions"}
                 </td>
+                <td className="px-6 py-3 text-sm text-gray-800">{user.status}</td>
                 <td className="px-6 py-3 text-sm">
                   <div className="flex space-x-2">
                     <button

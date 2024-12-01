@@ -4,6 +4,8 @@ export type User = {
     name?: string;
     role: { id: string; name: string } | null;
     permissions: { name: string }[];
+    status: string;
     createdAt: Date;
     updatedAt: Date;
+
 };

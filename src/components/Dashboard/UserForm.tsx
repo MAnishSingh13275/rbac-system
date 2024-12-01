@@ -3,7 +3,7 @@ import { addUser, updateUser, fetchRoles, deleteRole, fetchPermissions } from "@
 import { User } from "@/types/utils";
 import AddRoleModal from "./AddRoleModal";
 import AddPermissionModal from "./AddPermissionModal";
-import Spinner from "../Spinner";
+import Spinner from "../Spinner"; // Correctly import the Spinner component
 
 const UserForm = ({
   onClose,
@@ -16,8 +16,9 @@ const UserForm = ({
 }) => {
   const [name, setUsername] = useState(editingUser?.name || "");
   const [email, setEmail] = useState(editingUser?.email || "");
-  const [role, setRole] = useState(editingUser?.role?.id || ""); 
+  const [role, setRole] = useState(editingUser?.role?.id || ""); // Ensure role is an ID
   const [permissions, setPermissions] = useState<string[]>(editingUser?.permissions?.map(p => p.name) || []);
+  const [status, setStatus] = useState(editingUser?.status || "ACTIVE");
   const [roles, setRoles] = useState<{ id: string, name: string }[]>([]);
   const [permissionsOptions, setPermissionsOptions] = useState<string[]>([]);
   const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
@@ -31,8 +32,9 @@ const UserForm = ({
     if (editingUser) {
       setUsername(editingUser.name || "");
       setEmail(editingUser.email);
-      setRole(editingUser.role?.id || "");
+      setRole(editingUser.role?.id || ""); // Ensure role is an ID
       setPermissions(editingUser.permissions.map(p => p.name));
+      setStatus(editingUser.status || "ACTIVE");
     }
   }, [editingUser]);
 
@@ -62,7 +64,7 @@ const UserForm = ({
       setError("Please select a role.");
       return;
     }
-    const user = { id: editingUser?.id, name, email, role, permissions };
+    const user = { id: editingUser?.id, name, email, role, permissions, status };
     setSubmitting(true);
     try {
       if (editingUser) {
@@ -88,35 +90,44 @@ const UserForm = ({
     );
   };
 
+  const handleDeleteRole = async (roleId: string) => {
+    try {
+      await deleteRole(roleId);
+      setRoles(roles.filter((r) => r.id !== roleId));
+    } catch (error) {
+      console.error("Failed to delete role:", error);
+    }
+  };
+
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-xl w-full sm:w-96 mx-auto">
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && <p className="text-red-500">{error}</p>}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {/* Username Field */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Username
+            </label>
             <input
               type="text"
               name="username"
               id="username"
-              className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="Enter username"
               value={name}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
-
-          {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               name="email"
               id="email"
-              className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -124,11 +135,11 @@ const UserForm = ({
             />
           </div>
         </div>
-
-        {/* Role Selection */}
         <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-          <div className="flex items-center space-x-2">
+          <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+            Role
+          </label>
+          <div className="flex items-center">
             {loadingRoles ? (
               <Spinner />
             ) : (
@@ -154,15 +165,28 @@ const UserForm = ({
             </button>
           </div>
         </div>
-
-        {/* Permissions Selection */}
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+            Status
+          </label>
+          <select
+            name="status"
+            id="status"
+            className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Permissions</label>
           {loadingPermissions ? (
             <Spinner />
           ) : (
             permissionsOptions.map((permission) => (
-              <div key={permission} className="flex items-center space-x-2">
+              <div key={permission} className="flex items-center">
                 <input
                   type="checkbox"
                   id={permission}
@@ -172,7 +196,9 @@ const UserForm = ({
                   onChange={() => handlePermissionChange(permission)}
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor={permission} className="ml-2 block text-sm text-gray-900">{permission}</label>
+                <label htmlFor={permission} className="ml-2 block text-sm text-gray-900">
+                  {permission}
+                </label>
               </div>
             ))
           )}
@@ -184,27 +210,23 @@ const UserForm = ({
             Add Permission
           </button>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="mr-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={submitting}
           >
             {submitting ? "Submitting..." : editingUser ? "Update User" : "Create User"}
           </button>
         </div>
       </form>
-
-      {/* Modals for Adding Roles and Permissions */}
       {isAddRoleModalOpen && (
         <AddRoleModal
           onClose={() => setIsAddRoleModalOpen(false)}

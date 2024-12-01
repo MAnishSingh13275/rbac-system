@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,7 @@ export async function PUT(req: NextRequest) {
       { status: 400 }
     );
   }
-  const { email, name, role, permissions } = await req.json();
+  const { email, name, role, permissions, status } = await req.json();
   try {
     const user = await prisma.user.update({
       where: { id: String(id) },
@@ -24,6 +24,7 @@ export async function PUT(req: NextRequest) {
           set: [], // Clear existing permissions
           connect: permissions.map((permission: string) => ({ name: permission })), // Connect the user to existing permissions
         },
+        status: status as UserStatus, // Set the user status to active
       },
     });
     return NextResponse.json(user, { status: 200 });
