@@ -31,7 +31,6 @@ const DashboardPage = () => {
     loadUsers();
   }, []);
 
-
   const handleDeleteUser = async (id: string) => {
     try {
       await deleteUser(id);
@@ -69,7 +68,7 @@ const DashboardPage = () => {
           Logout
         </button>
       </header>
-      {/* Add New User Button */}
+
       <div className="flex justify-end mb-6">
         <button
           onClick={() => {
@@ -82,7 +81,6 @@ const DashboardPage = () => {
         </button>
       </div>
 
-      {/* User Table */}
       <UserTable
         users={users}
         onEdit={handleEditUser}
@@ -90,7 +88,6 @@ const DashboardPage = () => {
         loading={loading}
       />
 
-      {/* Modal for adding/editing user */}
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <UserForm
