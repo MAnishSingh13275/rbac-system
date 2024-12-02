@@ -54,7 +54,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">{children}</div>
+    <div className="bg-gray-50 min-h-screen">{children}</div>
   );
 };
 

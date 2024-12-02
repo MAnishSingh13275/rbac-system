@@ -19,7 +19,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, loading 
             <th className="px-6 py-3 text-left">Role</th>
             <th className="px-6 py-3 text-left">Permissions</th>
             <th className="px-6 py-3 text-left">Status</th>
-            <th className="px-6 py-3"></th>
+            <th className="px-6 py-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -51,19 +51,17 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, loading 
                     : "No permissions"}
                 </td>
                 <td className="px-6 py-3 text-gray-800">{user.status}</td>
-                <td className="px-6 py-3">
-                  <div className="flex space-x-2">
+                <td className="px-6 py-3 text-center">
+                  <div className="flex justify-center space-x-2">
                     <button
                       onClick={() => onEdit(user)}
-                      className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 flex items-center space-x-2"
-                      aria-label="Edit user"
+                      className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 flex items-center space-x-2"
                     >
                       <i className="fas fa-edit"></i> <span>Edit</span>
                     </button>
                     <button
                       onClick={() => onDelete(user.id)}
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center space-x-2"
-                      aria-label="Delete user"
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center space-x-2"
                     >
                       <i className="fas fa-trash"></i> <span>Delete</span>
                     </button>
@@ -77,5 +75,6 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, loading 
     </div>
   );
 };
+
 
 export default UserTable;
