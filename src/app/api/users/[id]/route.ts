@@ -19,12 +19,12 @@ export async function PUT(req: NextRequest) {
       data: {
         email,
         name,
-        role: { connect: { id: role } }, // Connect the user to an existing role
+        role: { connect: { id: role.id } }, // Connect the user to an existing role using the role's id
         permissions: {
           set: [], // Clear existing permissions
-          connect: permissions.map((permission: string) => ({ name: permission })), // Connect the user to existing permissions
+          connect: permissions.map((permission: { name: string }) => ({ name: permission.name })), // Connect the user to existing permissions using the permission's name
         },
-        status: status as UserStatus, // Set the user status to active
+        status,
       },
     });
     return NextResponse.json(user, { status: 200 });
