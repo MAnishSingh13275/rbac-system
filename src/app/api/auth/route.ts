@@ -32,8 +32,6 @@ export async function POST(req: Request) {
       JWT_SECRET,
       { expiresIn: "1h" }
     );
-  
-    console.log("Generated JWT Token:", token);
     return NextResponse.json({ token, role: user.role });
   }
   

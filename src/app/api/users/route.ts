@@ -11,7 +11,6 @@ export async function GET() {
         permissions: true,
       },
     });
-    console.log(users);
     return NextResponse.json(users, { status: 200 });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
