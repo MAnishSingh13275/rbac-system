@@ -18,7 +18,6 @@ const USERS = [
 ];
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
-const JWT_EXPIRES_IN = "1h";
 
 export async function POST(req: Request) {
     const { email, password } = await req.json();

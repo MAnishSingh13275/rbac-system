@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Modal from "@/components/Dashboard/Modal";
 import UserForm from "@/components/Dashboard/UserForm";
 import UserTable from "@/components/Dashboard/UserTable";
-import axios from "axios";
 import { User } from "@/types/utils";
 import { fetchUsers, deleteUser } from "@/services/userService";
 import { toast } from "react-toastify"; // Assuming you're using react-toastify for notifications
@@ -32,22 +31,6 @@ const DashboardPage = () => {
     loadUsers();
   }, []);
 
-  const handleSaveUser = async (user: User) => {
-    try {
-      if (editingUser) {
-        await axios.put(`/api/users/${user.id}`, user);
-        toast.success("User updated successfully!");
-      } else {
-        await axios.post("/api/users", user);
-        toast.success("User added successfully!");
-      }
-      loadUsers();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error saving user:", error);
-      toast.error("Error saving user.");
-    }
-  };
 
   const handleDeleteUser = async (id: string) => {
     try {

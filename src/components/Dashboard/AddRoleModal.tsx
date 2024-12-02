@@ -7,7 +7,7 @@ const AddRoleModal = ({ onClose, onRoleAdded }: { onClose: () => void; onRoleAdd
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addRole({ name: roleName });
+      await addRole({ name: roleName, permissions: [] });
       onRoleAdded();
       onClose();
     } catch (error) {

@@ -33,6 +33,7 @@ const LandingPage = () => {
       document.cookie = `authToken=${token}; path=/;`;
       router.push("/dashboard");
     } catch (err) {
+      console.error("Login error:", err);
       setError("Something went wrong. Please try again.");
       setLoading(false); // Reset loading state on error
     }

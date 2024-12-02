@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { addUser, updateUser, fetchRoles, deleteRole, fetchPermissions } from "@/services/userService";
-import { User } from "@/types/utils";
+import { addUser, updateUser, fetchRoles, fetchPermissions } from "@/services/userService";
+import { User, UserStatus } from "@/types/utils";
 import AddRoleModal from "./AddRoleModal";
 import AddPermissionModal from "./AddPermissionModal";
 import Spinner from "../Spinner"; // Correctly import the Spinner component
@@ -18,7 +18,7 @@ const UserForm = ({
   const [email, setEmail] = useState(editingUser?.email || "");
   const [role, setRole] = useState(editingUser?.role?.id || ""); // Ensure role is an ID
   const [permissions, setPermissions] = useState<string[]>(editingUser?.permissions?.map(p => p.name) || []);
-  const [status, setStatus] = useState(editingUser?.status || "ACTIVE");
+  const [status, setStatus] = useState<UserStatus>(editingUser?.status || UserStatus.ACTIVE);
   const [roles, setRoles] = useState<{ id: string, name: string }[]>([]);
   const [permissionsOptions, setPermissionsOptions] = useState<string[]>([]);
   const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
@@ -64,7 +64,14 @@ const UserForm = ({
       setError("Please select a role.");
       return;
     }
-    const user = { id: editingUser?.id, name, email, role, permissions, status };
+    const user = { 
+      id: editingUser?.id, 
+      name, 
+      email, 
+      role: roles.find(r => r.id === role) || { id: role, name: '' }, 
+      permissions: permissions.map(p => ({ name: p })), 
+      status 
+    };
     setSubmitting(true);
     try {
       if (editingUser) {
@@ -88,15 +95,6 @@ const UserForm = ({
         ? prevPermissions.filter((p) => p !== permission)
         : [...prevPermissions, permission]
     );
-  };
-
-  const handleDeleteRole = async (roleId: string) => {
-    try {
-      await deleteRole(roleId);
-      setRoles(roles.filter((r) => r.id !== roleId));
-    } catch (error) {
-      console.error("Failed to delete role:", error);
-    }
   };
 
   return (
@@ -174,7 +172,7 @@ const UserForm = ({
             id="status"
             className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as UserStatus)}
           >
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { User } from "@/types/utils"; // Assuming you have a User type defined
 
 interface UserTableProps {

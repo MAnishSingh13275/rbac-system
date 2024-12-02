@@ -36,6 +36,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           setIsLoading(false);
         }
       } catch (err) {
+        console.error("Error verifying token:", err);
         router.push("/");
       }
     };
